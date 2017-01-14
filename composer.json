@@ -1,0 +1,21 @@
+{
+	"name": "mvccore/ext-tracy-session",
+	"description": "Extension for MvcCore_Debug_Tracy extension to render and add into tracy debug panel $_SESSION content and MvcCore_Session namespaces content.",
+	"keywords": ["mvccore", "framework", "extension", "tracy", "session", "basic session", "session namespace"],
+	"license": ["BSD-3-Clause"],
+	"authors": [
+		{
+			"name": "Tom Flidr",
+			"homepage": "https://github.com/tomFlidr"
+		}
+	],
+	"require": {
+		"php": ">=5.3.0",
+		"mvccore/mvccore": "^3.0",
+		"mvccore/ext-tracy": "^3.0"
+	},
+	"autoload": {
+		"classmap": ["src/"]
+	},
+	"minimum-stability": "dev"
+}

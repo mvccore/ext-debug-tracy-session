@@ -1,0 +1,68 @@
+<style type="text/css">
+	#tracy-session-panel-title{cursor: move;}
+	#tracy-session-panel-title .left,
+	#tracy-session-panel-content .left{display:block;float:left;}
+	#tracy-session-panel-title .right,
+	#tracy-session-panel-content .right{display:block;float:right;}
+	#tracy-session-panel-title .clear,
+	#tracy-session-panel-content .clear{clear:both;}
+	#tracy-session-panel-title *{white-space:nowrap;}
+	#tracy-session-panel-title .left{line-height:30px;font-size:24px;}
+	#tracy-session-panel-title .right{line-height:16px;font-size:10px;padding-top:12px;}
+	#tracy-session-panel-content{min-width:500px;max-width:800px;min-height:500px;max-height:800px;overflow:auto;}
+	#tracy-session-panel-content table{width:100%;border-collapse:collapse;background:#FDF5CE;margin:0 0 5px 0;}
+	#tracy-session-panel-content .h2{display:block;overflow:hidden;}
+	#tracy-session-panel-content .h2 .left{line-height:24px;font-size:16px;}
+	#tracy-session-panel-content .h2 .right{line-height:10px;text-align:right;}
+	#tracy-session-panel-content .h2 .right i{display:block;line-height:12px;font-size:10px;color:#aaa;}
+	#tracy-session-panel-content table td,#tracy-session-panel-content table th{border:1px solid #E6DFBF;padding:2px 5px;vertical-align:top;text-align:left;}
+</style>
+<div id="tracy-session-panel-title">
+	<span class="left">
+		<img width="16" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAMRJREFUeNpiZCAT2Orr6QOpAhYyNdcDqQAgdmAhw9YFQKwAxAaHL176yESirRegmh2Amh+CxFlIsNUAKpQA1HwRJs9EpK3Imjciq2Eh0lYQmADUvBBdLRMRtoLAAqDmQmyWERuIBlBXYQBmdIFHL18elJcQ3wBkWgCxBFQYRGcAxcHyxLjgAQ4xDHFGHAG4ARrfMI0N2AIQwwCgZnuoZgFCGjGiEag5Hhp1II0FhDSiGADU3A/NHAnEakSJd6jtZAGAAAMA89NIrMVVIPoAAAAASUVORK5CYII=" />
+        <b>Session Panel</b>
+	</span>
+	<span class="right">
+		<b>Max. life time:</b> <?php
+			echo MvcCoreExt_Tracy_SessionPanel::$SessionMaxLifeTime;
+		?>
+	</span>
+	<div class="clear"></div>
+</div>
+<div id="tracy-session-panel-content"><?php
+	foreach (MvcCoreExt_Tracy_SessionPanel::$Session as & $item):
+		$itemNamespaceType = $item->type == MvcCoreExt_Tracy_SessionPanel::TYPE_NAMESPACE;
+?><table>
+		<thead>
+			<tr>
+				<td>
+					<div class="h2">
+                        <b class="left"><?php echo $item->key; ?></b>
+						<div class="right">
+                            <i class="type"><?php
+								echo ($itemNamespaceType) ? '(namespace)' : '(PHP value)';
+                            ?></i>
+                            <?php if ($itemNamespaceType): ?>
+								<i class="expiration">Expiration after: <?php
+									foreach ($item->expirations as $key => & $expiration) {
+										$glue = $key > 0 ? ', ' : '';
+										echo $glue . $expiration->text;
+									}
+								?></i>
+                            <?php endif; ?>
+                        </div>
+                        <span class="clear"></span>
+                    </div>
+				</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<?php echo $item->value; ?>
+				</td>
+			</tr>
+		</tbody>
+	</table><?php
+	endforeach;
+?></div>
