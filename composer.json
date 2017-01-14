@@ -1,6 +1,6 @@
 {
 	"name": "mvccore/ext-tracy-session",
-	"description": "Extension for MvcCore_Debug_Tracy extension to render and add into tracy debug panel $_SESSION content and MvcCore_Session namespaces content.",
+	"description": "Extension for MvcCoreExt_Tracy extension to render and add into tracy debug panel $_SESSION content and MvcCore_Session namespaces content.",
 	"keywords": ["mvccore", "framework", "extension", "tracy", "session", "basic session", "session namespace"],
 	"license": ["BSD-3-Clause"],
 	"authors": [
