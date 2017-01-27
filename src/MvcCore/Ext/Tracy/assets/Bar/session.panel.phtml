@@ -24,14 +24,14 @@
 	</span>
 	<span class="right">
 		<b>Max. life time:</b> <?php
-			echo MvcCoreExt_Tracy_SessionPanel::$SessionMaxLifeTime;
+			echo \MvcCore\Ext\Debug\Tracy\SessionPanel::$SessionMaxLifeTime;
 		?>
 	</span>
 	<div class="clear"></div>
 </div>
 <div id="tracy-session-panel-content"><?php
-	foreach (MvcCoreExt_Tracy_SessionPanel::$Session as & $item):
-		$itemNamespaceType = $item->type == MvcCoreExt_Tracy_SessionPanel::TYPE_NAMESPACE;
+	foreach (\MvcCore\Ext\Debug\Tracy\SessionPanel::$Session as & $item):
+		$itemNamespaceType = $item->type == \MvcCore\Ext\Debug\Tracy\SessionPanel::TYPE_NAMESPACE;
 ?><table>
 		<thead>
 			<tr>

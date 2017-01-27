@@ -8,10 +8,12 @@
  * the LICENSE.md file that are distributed with this source code.
  *
  * @copyright	Copyright (c) 2016 Tom Flídr (https://github.com/mvccore/mvccore)
- * @license		https://mvccore.github.io/docs/mvccore/3.0.0/LICENCE.md
+ * @license		https://mvccore.github.io/docs/mvccore/4.0.0/LICENCE.md
  */
 
-class MvcCoreExt_Tracy_SessionPanel implements \Tracy\IBarPanel
+namespace MvcCore\Ext\Debug\Tracy;
+
+class SessionPanel implements \Tracy\IBarPanel
 {
 	const TYPE_PHP = 0;
 	const TYPE_NAMESPACE = 1;
@@ -20,17 +22,17 @@ class MvcCoreExt_Tracy_SessionPanel implements \Tracy\IBarPanel
 	const EXPIRATION_TIME = 2;
 
 	/**
-	 * MvcCore_Session meta info store key in $_SESSION
+	 * \MvcCore\Session meta info store key in $_SESSION
 	 * @var string 
 	 */
-	public static $MetaStoreKey = MvcCore_Session::SESSION_METADATA_KEY;
+	public static $MetaStoreKey = \MvcCore\Session::SESSION_METADATA_KEY;
 	/**
 	 * Readed session store as data printed in template
 	 * @var array
 	 */
 	public static $Session = array();
 	/**
-	 * Formated max. lifetime from MvcCore_Session namespace
+	 * Formated max. lifetime from \MvcCore\Session namespace
 	 * @var string
 	 */
 	public static $SessionMaxLifeTime = '';
@@ -40,7 +42,7 @@ class MvcCoreExt_Tracy_SessionPanel implements \Tracy\IBarPanel
 	 */
 	public static $Id = 'session-panel';
 	/**
-	 * Now time at MvcCore_Debug_Tracy static init - mostly in request begin
+	 * Now time at \MvcCore\Ext\Debug\SessionPanel static init - mostly in request begin
 	 * @var int
 	 */
 	public static $Now = 0;
@@ -66,7 +68,7 @@ class MvcCoreExt_Tracy_SessionPanel implements \Tracy\IBarPanel
 	protected function readSession () {
 		if (is_null($_SESSION)) return;
 
-		// read MvcCore_Session storage
+		// read \MvcCore\Session storage
 		$sessionRawMetaStore = isset($_SESSION[self::$MetaStoreKey]) ? $_SESSION[self::$MetaStoreKey] : '';
 		$sessionMetaStore = $sessionRawMetaStore ? unserialize($sessionRawMetaStore) : (object) array('names' => array());
 
@@ -78,10 +80,10 @@ class MvcCoreExt_Tracy_SessionPanel implements \Tracy\IBarPanel
 		$standardRecords = array();
 		$namespaceRecords = array();
 
-		// look for each record in $_SESSION if data are defined as namespace in MvcCore_Session meta store
+		// look for each record in $_SESSION if data are defined as namespace in \MvcCore\Session meta store
 		foreach ($_SESSION as $sessionKey => $sessionData) {
 			if ($sessionKey === self::$MetaStoreKey) continue;
-			$item = new stdClass;
+			$item = new \stdClass;
 			$item->key = $sessionKey;
 			$item->value = $this->_clickableDump($sessionData);
 			if (isset($sessionMetaStore->names[$sessionKey])) {
