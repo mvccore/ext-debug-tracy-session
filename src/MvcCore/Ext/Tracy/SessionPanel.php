@@ -15,6 +15,13 @@ namespace MvcCore\Ext\Debug\Tracy;
 
 class SessionPanel implements \Tracy\IBarPanel
 {
+	/**
+	 * MvcCore Extension - Debug - Tracy Panel - Session - version:
+	 * Comparation by PHP function version_compare();
+	 * @see http://php.net/manual/en/function.version-compare.php
+	 */
+	const VERSION = '4.1.0';
+	
 	const TYPE_PHP = 0;
 	const TYPE_NAMESPACE = 1;
 
