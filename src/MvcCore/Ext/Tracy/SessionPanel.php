@@ -20,7 +20,7 @@ class SessionPanel implements \Tracy\IBarPanel
 	 * Comparation by PHP function version_compare();
 	 * @see http://php.net/manual/en/function.version-compare.php
 	 */
-	const VERSION = '4.1.0';
+	const VERSION = '4.2.0';
 	
 	const TYPE_PHP = 0;
 	const TYPE_NAMESPACE = 1;
