@@ -20,8 +20,8 @@ class SessionPanel implements \Tracy\IBarPanel
 	 * Comparation by PHP function version_compare();
 	 * @see http://php.net/manual/en/function.version-compare.php
 	 */
-	const VERSION = '4.2.0';
-	
+	const VERSION = '4.3.1';
+
 	const TYPE_PHP = 0;
 	const TYPE_NAMESPACE = 1;
 
@@ -30,7 +30,7 @@ class SessionPanel implements \Tracy\IBarPanel
 
 	/**
 	 * \MvcCore\Session meta info store key in $_SESSION
-	 * @var string 
+	 * @var string
 	 */
 	public static $MetaStoreKey = \MvcCore\Session::SESSION_METADATA_KEY;
 	/**
@@ -130,7 +130,7 @@ class SessionPanel implements \Tracy\IBarPanel
 		if ($maxLifeTimes->hoops > 0) $maxLifeTimesItems[] = $maxLifeTimes->hoops . ' hoops';
 		self::$SessionMaxLifeTime = implode(', ', $maxLifeTimesItems);
 	}
-	
+
 	private function _formateDate ($timestamp = 0) {
 		//$timeFormated = '';
 		$result = array();
@@ -176,8 +176,8 @@ class SessionPanel implements \Tracy\IBarPanel
 			'#^( *)((?>[^(]{1,200}))\((\d+)\) <code>#m',
 			function ($m) {
 				return "$m[1]<a href='#' rel='next'>$m[2]($m[3]) " . (
-					trim($m[1]) || $m[3] < 7 
-						? 
+					trim($m[1]) || $m[3] < 7
+						?
 							'<abbr>&#x25bc;</abbr> </a><code>'
 						:
 							'<abbr>&#x25ba;</abbr> </a><code class="nette-collapsed">'
