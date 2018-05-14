@@ -20,65 +20,92 @@ class SessionPanel implements \Tracy\IBarPanel
 	 * Comparation by PHP function version_compare();
 	 * @see http://php.net/manual/en/function.version-compare.php
 	 */
-	const VERSION = '4.3.1';
-
-	const TYPE_PHP = 0;
-	const TYPE_NAMESPACE = 1;
-
-	const EXPIRATION_HOOPS = 1;
-	const EXPIRATION_TIME = 2;
+	const VERSION = '5.0.0-alpha';
 
 	/**
-	 * \MvcCore\Session meta info store key in $_SESSION
+	 * Internal constants to recognize session record types in template.
+	 */
+	const _TYPE_PHP = 0;
+	const _TYPE_NAMESPACE = 1;
+	const _EXPIRATION_HOOPS = 1;
+	const _EXPIRATION_TIME = 2;
+
+	/**
+	 * `\MvcCore\Interfaces\ISession` meta info store key in `$_SESSION`.
 	 * @var string
 	 */
-	public static $MetaStoreKey = \MvcCore\Session::SESSION_METADATA_KEY;
+	public static $MetaStoreKey = \MvcCore\Interfaces\ISession::SESSION_METADATA_KEY;
+
 	/**
-	 * Readed session store as data printed in template
+	 * Session store dumped data, rendered in template.
 	 * @var array
 	 */
-	public static $Session = array();
+	protected $session = array();
+
 	/**
-	 * Formated max. lifetime from \MvcCore\Session namespace
+	 * Formated max. lifetime from `\MvcCore\Session` namespace.
 	 * @var string
 	 */
-	public static $SessionMaxLifeTime = '';
+	protected $sessionMaxLifeTime = '';
+
 	/**
-	 * Debug panel id
-	 * @var string
-	 */
-	public static $Id = 'session-panel';
-	/**
-	 * Now time at \MvcCore\Ext\Debug\SessionPanel static init - mostly in request begin
+	 * Now time completed in `\MvcCore\Ext\Debug\SessionPanel::__construct();` in request begin
 	 * @var int
 	 */
-	public static $Now = 0;
+	protected $now = 0;
 
+	/**
+	 * Create new panel instance, always called in request begin.
+	 * @return SessionPanel
+	 */
 	public function __construct () {
-		self::$Now = time();
+		$sessionClass = \MvcCore\Application::GetInstance()->GetSessionClass();
+		$this->now = $sessionClass::GetSessionStartTime();
 	}
+
+	/**
+	 * Get unique `Tracy` debug bar panel id.
+	 * @return string
+	 */
 	public function getId() {
-		return self::$Id;
+		return 'session-panel';
 	}
+
+	/**
+	 * Return rendered debug panel heading HTML code displayed all time in `Tracy` debug  bar.
+	 * @return string
+	 */
 	public function getTab() {
 		ob_start();
-		require(__DIR__ . '/assets/Bar/session.tab.phtml');
+		include(__DIR__ . '/assets/Bar/session.tab.phtml');
 		return ob_get_clean();
 	}
+
+	/**
+	 * Return rendered debug panel content window HTML code.
+	 * @return string
+	 */
 	public function getPanel() {
-		$this->readSession();
-		if (!self::$Session) return '';
+		$this->prepareSessionData();
+		if (!$this->session) return '';
 		ob_start();
-		require(__DIR__ . '/assets/Bar/session.panel.phtml');
+		include(__DIR__ . '/assets/Bar/session.panel.phtml');
 		return ob_get_clean();
 	}
-	protected function readSession () {
-		if (is_null($_SESSION)) return;
 
-		// read \MvcCore\Session storage
-		$sessionRawMetaStore = isset($_SESSION[self::$MetaStoreKey]) ? $_SESSION[self::$MetaStoreKey] : '';
-		$sessionMetaStore = $sessionRawMetaStore ? unserialize($sessionRawMetaStore) : (object) array('names' => array());
+	/**
+	 * Read and parse session data except MvcCore metadata session record.
+	 * @return void
+	 */
+	protected function prepareSessionData () {
+		if ($_SESSION === NULL) return;
 
+		// read `\MvcCore\Session` storage
+		$sessionClass = \MvcCore\Application::GetInstance()->GetSessionClass();
+		$sessionRawMetaStore = $sessionClass::GetSessionMetadata();
+		$sessionMetaStore = $sessionRawMetaStore instanceof \stdClass
+			? $sessionRawMetaStore
+			: (object) array('names' => array());
 		$maxLifeTimes = (object) array(
 			'hoops'		=> 0,
 			'seconds'	=> 0,
@@ -87,66 +114,83 @@ class SessionPanel implements \Tracy\IBarPanel
 		$standardRecords = array();
 		$namespaceRecords = array();
 
-		// look for each record in $_SESSION if data are defined as namespace in \MvcCore\Session meta store
+		// look for each record in `$_SESSION`
+		// if data are defined as session namespace
+		// record in `\MvcCore\Session` meta store:
 		foreach ($_SESSION as $sessionKey => $sessionData) {
 			if ($sessionKey === self::$MetaStoreKey) continue;
 			$item = new \stdClass;
 			$item->key = $sessionKey;
-			$item->value = $this->_clickableDump($sessionData);
+			$item->value = \Tracy\Dumper::toHtml($sessionData);
 			if (isset($sessionMetaStore->names[$sessionKey])) {
-				$item->type = self::TYPE_NAMESPACE;
+				if (count((array) $_SESSION[$sessionKey]) === 0)
+					// this will be destroyed automaticly by
+					// \MvcCore\Session::Close();` before `session_write_close()`.
+					continue;
+				$item->type = self::_TYPE_NAMESPACE;
 				$item->expirations = array();
 				if (isset($sessionMetaStore->hoops[$sessionKey])) {
 					$value = $sessionMetaStore->hoops[$sessionKey];
 					$item->expirations[] = (object) array(
-						'type'	=> self::EXPIRATION_HOOPS,
+						'type'	=> self::_EXPIRATION_HOOPS,
 						'value'	=> $value,
 						'text'	=> $value . ' hoops',
 					);
-					if ($value > $maxLifeTimes->hoops) $maxLifeTimes->hoops = $value;
+					if ($value > $maxLifeTimes->hoops)
+						$maxLifeTimes->hoops = $value;
 				}
 				if (isset($sessionMetaStore->expirations[$sessionKey])) {
-					$value = $sessionMetaStore->expirations[$sessionKey] - self::$Now;
+					$value = $sessionMetaStore->expirations[$sessionKey] - $this->now;
 					$item->expirations[] = (object) array(
-						'type'	=> self::EXPIRATION_TIME,
+						'type'	=> self::_EXPIRATION_TIME,
 						'value'	=> $value,
-						'text'	=> $this->_formateDate($value),
+						'text'	=> $this->_formateMaxLifeTimestamp($value),
 					);
-					if ($value > $maxLifeTimes->seconds) $maxLifeTimes->seconds = $value;
+					if ($value > $maxLifeTimes->seconds)
+						$maxLifeTimes->seconds = $value;
 				}
 				$namespaceRecords[$sessionKey] = $item;
 			} else {
-				$item->type = self::TYPE_PHP;
+				$item->type = self::_TYPE_PHP;
 				$standardRecords[$sessionKey] = $item;
 			}
 		}
 
 		ksort($standardRecords);
 		ksort($namespaceRecords);
-		self::$Session = array_merge($namespaceRecords, $standardRecords);
+		$this->session = array_merge($namespaceRecords, $standardRecords);
 
 		$maxLifeTimesItems = array();
-		if ($maxLifeTimes->seconds > 0) $maxLifeTimesItems[] = $this->_formateDate($maxLifeTimes->seconds);
-		if ($maxLifeTimes->hoops > 0) $maxLifeTimesItems[] = $maxLifeTimes->hoops . ' hoops';
-		self::$SessionMaxLifeTime = implode(', ', $maxLifeTimesItems);
+		if ($maxLifeTimes->seconds > 0)
+			$maxLifeTimesItems[] = $this->_formateMaxLifeTimestamp($maxLifeTimes->seconds);
+		if ($maxLifeTimes->hoops > 0)
+			$maxLifeTimesItems[] = $maxLifeTimes->hoops . ' hoops';
+		$this->sessionMaxLifeTime = implode(', ', $maxLifeTimesItems);
 	}
 
-	private function _formateDate ($timestamp = 0) {
-		//$timeFormated = '';
+	/**
+	 * Return expiration time in human readable format from seconds count.
+	 * @param int $timestamp
+	 * @return string
+	 */
+	private function _formateMaxLifeTimestamp ($timestamp = 0) {
 		$result = array();
 		if ($timestamp >= 31557600) {
 			$localVal = floor($timestamp / 31557600);
 			$result[] = $localVal . ' year' . (($localVal > 1) ? 's' : '');
+			if ($localVal > 1) return 'more than ' . $result[0];
 			$timestamp = $timestamp - (floor($timestamp / 31557600) * 31557600);
 		}
 		if ($timestamp >= 2592000) {
 			$localVal = floor($timestamp / 2592000);
 			$result[] = $localVal . ' month' . (($localVal > 1) ? 's' : '');
+			if (count($result) == 1 && $localVal > 1) return 'more than ' . $result[0];
 			$timestamp = $timestamp - (floor($timestamp / 2592000) * 2592000);
 		}
 		if ($timestamp >= 86400) {
 			$localVal = floor($timestamp / 86400);
 			$result[] = $localVal . ' day' . (($localVal > 1) ? 's' : '');
+			if (count($result) == 1 && $localVal > 1) return 'more than ' . $result[0];
 			$timestamp = $timestamp - (floor($timestamp / 86400) * 86400);
 		}
 		if ($timestamp >= 3600) {
@@ -164,26 +208,5 @@ class SessionPanel implements \Tracy\IBarPanel
 			if ($localVal > 1) $result[] = $localVal . ' seconds';
 		}
 		return implode(', ', $result);
-	}
-
-	/**
-	 * Dumps any variable to clickable html string reprezentation.
-	 * @param  mixed  $dump
-	 * @return string
-	 */
-	private function _clickableDump ($dump) {
-		return '<pre class="nette-dump">' . preg_replace_callback(
-			'#^( *)((?>[^(]{1,200}))\((\d+)\) <code>#m',
-			function ($m) {
-				return "$m[1]<a href='#' rel='next'>$m[2]($m[3]) " . (
-					trim($m[1]) || $m[3] < 7
-						?
-							'<abbr>&#x25bc;</abbr> </a><code>'
-						:
-							'<abbr>&#x25ba;</abbr> </a><code class="nette-collapsed">'
-					);
-			},
-			\Tracy\Dumper::toHtml($dump)
-		) . '</pre>';
 	}
 }
