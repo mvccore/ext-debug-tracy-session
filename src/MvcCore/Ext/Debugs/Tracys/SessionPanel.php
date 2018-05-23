@@ -11,8 +11,11 @@
  * @license		https://mvccore.github.io/docs/mvccore/4.0.0/LICENCE.md
  */
 
-namespace MvcCore\Ext\Debug\Tracy;
+namespace MvcCore\Ext\Debugs\Tracys;
 
+/**
+ * Responsibility - dump all session records as MvcCore session namespaces or just session PHP values.
+ */
 class SessionPanel implements \Tracy\IBarPanel
 {
 	/**
@@ -49,7 +52,7 @@ class SessionPanel implements \Tracy\IBarPanel
 	protected $sessionMaxLifeTime = '';
 
 	/**
-	 * Now time completed in `\MvcCore\Ext\Debug\SessionPanel::__construct();` in request begin
+	 * Now time completed in `\MvcCore\Ext\Debugs\SessionPanel::__construct();` in request begin
 	 * @var int
 	 */
 	protected $now = 0;
@@ -77,7 +80,7 @@ class SessionPanel implements \Tracy\IBarPanel
 	 */
 	public function getTab() {
 		ob_start();
-		include(__DIR__ . '/assets/Bar/session.tab.phtml');
+		include(__DIR__ . '/session.tab.phtml');
 		return ob_get_clean();
 	}
 
@@ -89,7 +92,7 @@ class SessionPanel implements \Tracy\IBarPanel
 		$this->prepareSessionData();
 		if (!$this->session) return '';
 		ob_start();
-		include(__DIR__ . '/assets/Bar/session.panel.phtml');
+		include(__DIR__ . '/session.panel.phtml');
 		return ob_get_clean();
 	}
 
