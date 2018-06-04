@@ -43,7 +43,7 @@ class SessionPanel implements \Tracy\IBarPanel
 	 * Session store dumped data, rendered in template.
 	 * @var array
 	 */
-	protected $session = array();
+	protected $session = [];
 
 	/**
 	 * Formated max. lifetime from `\MvcCore\Session` namespace.
@@ -108,14 +108,14 @@ class SessionPanel implements \Tracy\IBarPanel
 		$sessionRawMetaStore = $sessionClass::GetSessionMetadata();
 		$sessionMetaStore = $sessionRawMetaStore instanceof \stdClass
 			? $sessionRawMetaStore
-			: (object) array('names' => array());
-		$maxLifeTimes = (object) array(
+			: (object) ['names' => []];
+		$maxLifeTimes = (object) [
 			'hoops'		=> 0,
 			'seconds'	=> 0,
-		);
+		];
 
-		$standardRecords = array();
-		$namespaceRecords = array();
+		$standardRecords = [];
+		$namespaceRecords = [];
 
 		// look for each record in `$_SESSION`
 		// if data are defined as session namespace
@@ -131,24 +131,24 @@ class SessionPanel implements \Tracy\IBarPanel
 					// \MvcCore\Session::Close();` before `session_write_close()`.
 					continue;
 				$item->type = self::_TYPE_NAMESPACE;
-				$item->expirations = array();
+				$item->expirations = [];
 				if (isset($sessionMetaStore->hoops[$sessionKey])) {
 					$value = $sessionMetaStore->hoops[$sessionKey];
-					$item->expirations[] = (object) array(
+					$item->expirations[] = (object) [
 						'type'	=> self::_EXPIRATION_HOOPS,
 						'value'	=> $value,
 						'text'	=> $value . ' hoops',
-					);
+					];
 					if ($value > $maxLifeTimes->hoops)
 						$maxLifeTimes->hoops = $value;
 				}
 				if (isset($sessionMetaStore->expirations[$sessionKey])) {
 					$value = $sessionMetaStore->expirations[$sessionKey] - $this->now;
-					$item->expirations[] = (object) array(
+					$item->expirations[] = (object) [
 						'type'	=> self::_EXPIRATION_TIME,
 						'value'	=> $value,
 						'text'	=> $this->_formateMaxLifeTimestamp($value),
-					);
+					];
 					if ($value > $maxLifeTimes->seconds)
 						$maxLifeTimes->seconds = $value;
 				}
@@ -163,7 +163,7 @@ class SessionPanel implements \Tracy\IBarPanel
 		ksort($namespaceRecords);
 		$this->session = array_merge($namespaceRecords, $standardRecords);
 
-		$maxLifeTimesItems = array();
+		$maxLifeTimesItems = [];
 		if ($maxLifeTimes->seconds > 0)
 			$maxLifeTimesItems[] = $this->_formateMaxLifeTimestamp($maxLifeTimes->seconds);
 		if ($maxLifeTimes->hoops > 0)
@@ -177,7 +177,7 @@ class SessionPanel implements \Tracy\IBarPanel
 	 * @return string
 	 */
 	private function _formateMaxLifeTimestamp ($timestamp = 0) {
-		$result = array();
+		$result = [];
 		if ($timestamp >= 31557600) {
 			$localVal = floor($timestamp / 31557600);
 			$result[] = $localVal . ' year' . (($localVal > 1) ? 's' : '');
