@@ -1,7 +1,7 @@
 {
 	"name": "mvccore/ext-debug-tracy-session",
 	"type": "library",
-	"description": "MvcCore Extension - Debug Tracy Panel - Session - render and add into tracy debug panel $_SESSION content and \\MvcCore\\Session namespaces content.",
+	"description": "MvcCore - Extension - Debug - Tracy - Panel Session - render and add into tracy debug panel $_SESSION content and \\MvcCore\\Session namespaces content.",
 	"keywords": [
 		"mvc", 
 		"mvccore", 
