@@ -34,10 +34,10 @@ class SessionPanel implements \Tracy\IBarPanel
 	const _EXPIRATION_TIME = 2;
 
 	/**
-	 * `\MvcCore\Interfaces\ISession` meta info store key in `$_SESSION`.
+	 * `\MvcCore\ISession` meta info store key in `$_SESSION`.
 	 * @var string
 	 */
-	public static $MetaStoreKey = \MvcCore\Interfaces\ISession::SESSION_METADATA_KEY;
+	public static $MetaStoreKey = \MvcCore\ISession::SESSION_METADATA_KEY;
 
 	/**
 	 * Session store dumped data, rendered in template.
