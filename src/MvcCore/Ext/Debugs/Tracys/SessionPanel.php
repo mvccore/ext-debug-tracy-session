@@ -20,7 +20,7 @@ class SessionPanel implements \Tracy\IBarPanel
 {
 	/**
 	 * MvcCore Extension - Debug - Tracy Panel - Session - version:
-	 * Comparation by PHP function version_compare();
+	 * Comparison by PHP function version_compare();
 	 * @see http://php.net/manual/en/function.version-compare.php
 	 */
 	const VERSION = '5.0.0-alpha';
@@ -127,7 +127,7 @@ class SessionPanel implements \Tracy\IBarPanel
 			$item->value = \Tracy\Dumper::toHtml($sessionData);
 			if (isset($sessionMetaStore->names[$sessionKey])) {
 				if (count((array) $_SESSION[$sessionKey]) === 0)
-					// this will be destroyed automaticly by
+					// this will be destroyed automatically by
 					// \MvcCore\Session::Close();` before `session_write_close()`.
 					continue;
 				$item->type = self::_TYPE_NAMESPACE;
