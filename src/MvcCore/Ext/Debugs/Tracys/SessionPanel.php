@@ -46,7 +46,7 @@ class SessionPanel implements \Tracy\IBarPanel
 	protected $session = [];
 
 	/**
-	 * Formated max. lifetime from `\MvcCore\Session` namespace.
+	 * Formatted maximum lifetime from `\MvcCore\Session` namespace.
 	 * @var string
 	 */
 	protected $sessionMaxLifeTime = '';
