@@ -59,7 +59,7 @@ class SessionPanel implements \Tracy\IBarPanel
 
 	/**
 	 * Create new panel instance, always called in request begin.
-	 * @return SessionPanel
+	 * @return void
 	 */
 	public function __construct () {
 		$sessionClass = \MvcCore\Application::GetInstance()->GetSessionClass();
