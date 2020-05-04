@@ -52,21 +52,6 @@ class SessionPanel implements \Tracy\IBarPanel
 	protected $sessionMaxLifeTime = '';
 
 	/**
-	 * Now time completed in `\MvcCore\Ext\Debugs\SessionPanel::__construct();` in request begin
-	 * @var int
-	 */
-	protected $now = 0;
-
-	/**
-	 * Create new panel instance, always called in request begin.
-	 * @return void
-	 */
-	public function __construct () {
-		$sessionClass = \MvcCore\Application::GetInstance()->GetSessionClass();
-		$this->now = $sessionClass::GetSessionStartTime();
-	}
-
-	/**
 	 * Get unique `Tracy` debug bar panel id.
 	 * @return string
 	 */
@@ -103,6 +88,9 @@ class SessionPanel implements \Tracy\IBarPanel
 	protected function prepareSessionData () {
 		if ($_SESSION === NULL) return;
 
+		$sessionClass = \MvcCore\Application::GetInstance()->GetSessionClass();
+		$now = $sessionClass::GetSessionStartTime();
+
 		// read `\MvcCore\Session` storage
 		$sessionClass = \MvcCore\Application::GetInstance()->GetSessionClass();
 		$sessionRawMetaStore = $sessionClass::GetSessionMetadata();
@@ -116,7 +104,9 @@ class SessionPanel implements \Tracy\IBarPanel
 
 		$standardRecords = [];
 		$namespaceRecords = [];
-
+		//echo '<pre>';
+		//var_dump($sessionMetaStore);
+		//echo '</pre>';
 		// look for each record in `$_SESSION`
 		// if data are defined as session namespace
 		// record in `\MvcCore\Session` meta store:
@@ -143,7 +133,7 @@ class SessionPanel implements \Tracy\IBarPanel
 						$maxLifeTimes->hoops = $value;
 				}
 				if (isset($sessionMetaStore->expirations[$sessionKey])) {
-					$value = $sessionMetaStore->expirations[$sessionKey] - $this->now;
+					$value = $sessionMetaStore->expirations[$sessionKey] - $now;
 					$item->expirations[] = (object) [
 						'type'	=> self::_EXPIRATION_TIME,
 						'value'	=> $value,
