@@ -7,8 +7,8 @@
  * For the full copyright and license information, please view
  * the LICENSE.md file that are distributed with this source code.
  *
- * @copyright	Copyright (c) 2016 Tom Flídr (https://github.com/mvccore/mvccore)
- * @license		https://mvccore.github.io/docs/mvccore/4.0.0/LICENCE.md
+ * @copyright	Copyright (c) 2016 Tom Flidr (https://github.com/mvccore)
+ * @license		https://mvccore.github.io/docs/mvccore/5.0.0/LICENCE.md
  */
 
 namespace MvcCore\Ext\Debugs\Tracys;
@@ -16,14 +16,14 @@ namespace MvcCore\Ext\Debugs\Tracys;
 /**
  * Responsibility - dump all session records as MvcCore session namespaces or just session PHP values.
  */
-class SessionPanel implements \Tracy\IBarPanel
-{
+class SessionPanel implements \Tracy\IBarPanel {
+
 	/**
-	 * MvcCore Extension - Debug - Tracy Panel - Session - version:
+	 * MvcCore Extension - Debug - Tracy - Session - version:
 	 * Comparison by PHP function version_compare();
 	 * @see http://php.net/manual/en/function.version-compare.php
 	 */
-	const VERSION = '5.0.0-alpha';
+	const VERSION = '5.0.0';
 
 	/**
 	 * Internal constants to recognize session record types in template.
@@ -34,7 +34,7 @@ class SessionPanel implements \Tracy\IBarPanel
 	const _EXPIRATION_TIME = 2;
 
 	/**
-	 * `\MvcCore\ISession` meta info store key in `$_SESSION`.
+	 * `\MvcCore\Session` meta info store key in `$_SESSION`.
 	 * @var string
 	 */
 	public static $MetaStoreKey = \MvcCore\ISession::SESSION_METADATA_KEY;
