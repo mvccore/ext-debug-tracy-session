@@ -1,52 +1,49 @@
 <style type="text/css">
-	#tracy-session-panel-title{cursor:move;}
-	#tracy-session-panel-title .left,
-	#tracy-session-panel-content .left{display:block;float:left;}
-	#tracy-session-panel-title .right,
-	#tracy-session-panel-content .right{display:block;float:right;}
-	#tracy-session-panel-title .clear,
-	#tracy-session-panel-content .clear{clear:both;}
-	#tracy-session-panel-title *{white-space:nowrap;}
-	#tracy-session-panel-title .left{line-height:30px;font-size:24px;}
-	#tracy-session-panel-title .right{line-height:16px;font-size:10px;padding-top:12px;}
-	#tracy-session-panel-content{min-width:500px;max-width:800px;min-height:100px;max-height:800px;overflow:auto;}
-	#tracy-session-panel-content table{width:100%;border-collapse:collapse;background:#FDF5CE;margin:0 0 5px 0;}
-	#tracy-session-panel-content .h2{display:block;overflow:hidden;}
-	#tracy-session-panel-content .h2 .left{line-height:24px;font-size:16px;}
-	#tracy-session-panel-content .h2 .right{line-height:10px;text-align:right;}
-	#tracy-session-panel-content .h2 .right i{display:block;line-height:12px;font-size:10px;color:#aaa;}
-	#tracy-session-panel-content table td,#tracy-session-panel-content table th{border:1px solid #E6DFBF;padding:2px 5px;vertical-align:top;text-align:left;}
+	#tracy-session-panel{overflow:hidden;}
+	.tracy-mode-float #tracy-session-panel{overflow:visible;}
+	#tracy-session-panel h1{cursor:move;overflow:hidden;}
+	#tracy-debug #tracy-session-panel h1{padding-right:0;}
+	#tracy-session-panel h1 *{white-space:nowrap;}
+	#tracy-session-panel h1 .left{display:block;float:left;line-height:30px;font-size:24px;}
+	#tracy-session-panel h1 .right{display:block;float:right;line-height:16px;font-size:10px;padding-top:12px;}
+	#tracy-session-panel .content{width:100%;display:table;}
+	#tracy-session-panel .content table{width:100%;border-collapse:collapse;background:#FDF5CE;margin:0 0 5px 0;}
+	#tracy-session-panel .content div.namespace{line-height:1.3em;font-size:14px;}
+	#tracy-session-panel .content .metainfo{color:#aaa;white-space:nowrap;font-weight:normal;line-height:1.25em;font-size:10px;}
+	#tracy-session-panel .content .metainfo i{display:inline-block;}
+	#tracy-session-panel .content .metainfo i.expiration{margin-left:20px;}
+	#tracy-session-panel .content table td,
+	#tracy-session-panel .content table th{border:1px solid #E6DFBF;padding:2px 5px;vertical-align:top;text-align:left;}
 </style>
-<h1 id="tracy-session-panel-title">
-	<span class="left">
-		<img width="16" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAMRJREFUeNpiZCAT2Orr6QOpAhYyNdcDqQAgdmAhw9YFQKwAxAaHL176yESirRegmh2Amh+CxFlIsNUAKpQA1HwRJs9EpK3Imjciq2Eh0lYQmADUvBBdLRMRtoLAAqDmQmyWERuIBlBXYQBmdIFHL18elJcQ3wBkWgCxBFQYRGcAxcHyxLjgAQ4xDHFGHAG4ARrfMI0N2AIQwwCgZnuoZgFCGjGiEag5Hhp1II0FhDSiGADU3A/NHAnEakSJd6jtZAGAAAMA89NIrMVVIPoAAAAASUVORK5CYII=" />
-		Session Panel
-	</span>
-	<?php if ($this->sessionMaxLifeTime): ?>
-		<span class="right"><b>Max. life time:</b> <?php echo $this->sessionMaxLifeTime; ?></span>
-	<?php endif; ?>
-	<div class="clear"></div>
-</h1>
-<div id="tracy-session-panel-content"><?php
-	foreach ($this->session as & $item):
-		$itemNamespaceType = $item->type == self::_TYPE_NAMESPACE;
-?><table>
-	<thead><tr><td><div class="h2">
-		<b class="left"><?php echo $item->key; ?></b>
-		<div class="right">
-			<i class="type"><?php
-				echo ($itemNamespaceType) ? '(namespace)' : '(PHP value)';
-			?></i>
-			<?php if ($itemNamespaceType): ?>
+<div id="tracy-session-panel">
+	<h1>
+		<span class="left">Session</span>
+		<?php if ($this->sessionMaxLifeTime): ?>
+			<span class="right">Max. life time: <?php echo $this->sessionMaxLifeTime; ?></span>
+		<?php endif; ?>
+	</h1>
+	<div class="content">
+		<?php
+			foreach ($this->session as & $item):
+				$itemNamespaceType = $item->type == self::_TYPE_NAMESPACE;
+		?><table><thead><tr><th>
+			<div class="namespace"><?php echo $item->key; ?></div>
+			<div class="metainfo">
+				<i class="type"><?php
+					echo 'Record type: ';
+					echo ($itemNamespaceType) ? 'Session namespace' : 'PHP value';
+				?></i><?php if ($itemNamespaceType && count($item->expirations) > 0): ?>,
 				<i class="expiration">Expiration after: <?php
-					foreach ($item->expirations as $key => & $expiration) {
-						$glue = $key > 0 ? ', ' : '';
+					$glue = '';
+					foreach ($item->expirations as $expiration) {
 						echo $glue . $expiration->text;
+						$glue = ', ';
 					}
-				?></i>
-			<?php endif; ?>
-		</div>
-		<span class="clear"></span>
-	</div></td></tr></thead>
-	<tbody><tr><td><?php echo $item->value; ?></td></tr></tbody>
-</table><?php endforeach; ?></div>
+				?></i><?php endif; ?>
+			</div>
+		</th></tr></thead><tbody><tr><td><?php 
+			echo $item->value;
+		?></td></tr></tbody></table>
+	<?php endforeach; ?></div>
+	<?php echo $this->_debugCode; ?>
+</div>
