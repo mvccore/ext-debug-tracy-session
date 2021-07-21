@@ -14,7 +14,8 @@
 namespace MvcCore\Ext\Debugs\Tracys;
 
 /**
- * Responsibility - dump all session records as MvcCore session namespaces or just session PHP values.
+ * Responsibility - dump all session records as MvcCore session 
+ *                  namespaces or just session PHP values.
  */
 class SessionPanel implements \Tracy\IBarPanel {
 
@@ -50,6 +51,12 @@ class SessionPanel implements \Tracy\IBarPanel {
 	 * @var string
 	 */
 	protected $sessionMaxLifeTime = '';
+
+	/**
+	 * Debug code for this panel, printed at panel bottom.
+	 * @var string
+	 */
+	private $_debugCode = '';
 
 	/**
 	 * Get unique `Tracy` debug bar panel id.
@@ -104,9 +111,7 @@ class SessionPanel implements \Tracy\IBarPanel {
 
 		$standardRecords = [];
 		$namespaceRecords = [];
-		//echo '<pre>';
-		//var_dump($sessionMetaStore);
-		//echo '</pre>';
+		//$this->_debug($sessionMetaStore);
 		// look for each record in `$_SESSION`
 		// if data are defined as session namespace
 		// record in `\MvcCore\Session` meta store:
@@ -114,7 +119,11 @@ class SessionPanel implements \Tracy\IBarPanel {
 			if ($sessionKey === self::$MetaStoreKey) continue;
 			$item = new \stdClass;
 			$item->key = $sessionKey;
-			$item->value = \Tracy\Dumper::toHtml($sessionData);
+			$item->value = \Tracy\Dumper::toHtml($sessionData, [
+				\Tracy\Dumper::COLLAPSE	=> TRUE,
+				\Tracy\Dumper::LIVE		=> TRUE,
+				//\Tracy\Dumper::DEPTH	=> 5,
+			]);
 			if (isset($sessionMetaStore->names[$sessionKey])) {
 				if (count((array) $_SESSION[$sessionKey]) === 0)
 					// this will be destroyed automatically by
@@ -201,5 +210,17 @@ class SessionPanel implements \Tracy\IBarPanel {
 			if ($localVal > 1) $result[] = $localVal . ' seconds';
 		}
 		return implode(', ', $result);
+	}
+	
+	/**
+	 * Print any variable in panel body under session items.
+	 * @param  mixed $var
+	 * @return void
+	 */
+	private function _debug ($var) {
+		$this->_debugCode .= \Tracy\Dumper::toHtml($var, [
+			\Tracy\Dumper::LIVE		=> TRUE,
+			//\Tracy\Dumper::DEPTH	=> 5,
+		]);
 	}
 }
