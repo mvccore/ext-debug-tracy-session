@@ -24,7 +24,7 @@ class SessionPanel implements \Tracy\IBarPanel {
 	 * Comparison by PHP function version_compare();
 	 * @see http://php.net/manual/en/function.version-compare.php
 	 */
-	const VERSION = '5.0.3';
+	const VERSION = '5.0.4';
 
 	/**
 	 * Internal constants to recognize session record types in template.
@@ -132,14 +132,14 @@ class SessionPanel implements \Tracy\IBarPanel {
 				$item->type = self::_TYPE_NAMESPACE;
 				$item->expirations = [];
 				if (isset($sessionMetaStore->hoops[$sessionKey])) {
-					$value = $sessionMetaStore->hoops[$sessionKey];
+					list($hoopsCount, ) = $sessionMetaStore->hoops[$sessionKey];
 					$item->expirations[] = (object) [
 						'type'	=> self::_EXPIRATION_HOOPS,
-						'value'	=> $value,
-						'text'	=> $value . ' hoops',
+						'value'	=> $hoopsCount,
+						'text'	=> $hoopsCount . ' hoops',
 					];
-					if ($value > $maxLifeTimes->hoops)
-						$maxLifeTimes->hoops = $value;
+					if ($hoopsCount > $maxLifeTimes->hoops)
+						$maxLifeTimes->hoops = $hoopsCount;
 				}
 				if (isset($sessionMetaStore->expirations[$sessionKey])) {
 					$value = $sessionMetaStore->expirations[$sessionKey] - $now;
