@@ -1,25 +1,10 @@
 <?php
 	$nonce = \Tracy\Helpers::getNonce();
 	$nonceAttr = $nonce ? ' nonce="' . \Tracy\Helpers::escapeHtml($nonce) . '"' : '';
-?><style type="text/css"<?php echo $nonceAttr; ?>>
-	#tracy-session-panel{overflow:hidden;}
-	.tracy-mode-window #tracy-session-panel,
-	.tracy-mode-float #tracy-session-panel{overflow:visible;}
-	#tracy-session-panel h1{cursor:move;overflow:hidden;}
-	#tracy-debug #tracy-session-panel h1{padding-right:0;}
-	#tracy-session-panel h1 *{white-space:nowrap;}
-	#tracy-session-panel h1 .left{display:block;float:left;line-height:30px;font-size:24px;}
-	#tracy-session-panel h1 .right{display:block;float:right;line-height:16px;font-size:10px;padding-top:12px;}
-	#tracy-session-panel .content{width:100%;display:table;}
-	#tracy-session-panel .content table{width:100%;border-collapse:collapse;background:#FDF5CE;margin:0 0 5px 0;}
-	#tracy-session-panel .content div.namespace{line-height:1.3em;font-size:14px;}
-	#tracy-session-panel .content .metainfo{color:#aaa;white-space:nowrap;font-weight:normal;line-height:1.25em;font-size:10px;}
-	#tracy-session-panel .content .metainfo i{display:inline-block;}
-	#tracy-session-panel .content .metainfo i.expiration{margin-left:20px;}
-	#tracy-session-panel .content table td,
-	#tracy-session-panel .content table th{border:1px solid #E6DFBF;padding:2px 5px;vertical-align:top;text-align:left;}
-</style>
-<div id="tracy-session-panel">
+?><style type="text/css"<?php echo $nonceAttr; ?>><?php
+	include_once(__DIR__ . '/session.panel.css');
+?></style>
+<div class="tracy-panel-session">
 	<h1>
 		<span class="left">Session</span>
 		<?php if ($this->sessionMaxLifeTime): ?>

@@ -1,0 +1,16 @@
+#tracy-debug .tracy-panel-session{overflow:hidden;}
+#tracy-debug .tracy-mode-window .tracy-panel-session,
+#tracy-debug .tracy-mode-float .tracy-panel-session{overflow:visible;}
+#tracy-debug .tracy-panel-session h1{cursor:move;overflow:hidden;}
+#tracy-debug .tracy-panel-session h1{padding-right:0;}
+#tracy-debug .tracy-panel-session h1 *{white-space:nowrap;}
+#tracy-debug .tracy-panel-session h1 .left{display:block;float:left;line-height:30px;font-size:24px;}
+#tracy-debug .tracy-panel-session h1 .right{display:block;float:right;line-height:16px;font-size:10px;padding-top:12px;}
+#tracy-debug .tracy-panel-session .content{width:100%;display:table;}
+#tracy-debug .tracy-panel-session .content table{width:100%;border-collapse:collapse;background:#FDF5CE;margin:0 0 5px 0;}
+#tracy-debug .tracy-panel-session .content div.namespace{line-height:1.3em;font-size:14px;}
+#tracy-debug .tracy-panel-session .content .metainfo{color:#aaa;white-space:nowrap;font-weight:normal;line-height:1.25em;font-size:10px;}
+#tracy-debug .tracy-panel-session .content .metainfo i{display:inline-block;}
+#tracy-debug .tracy-panel-session .content .metainfo i.expiration{margin-left:20px;}
+#tracy-debug .tracy-panel-session .content table td,
+#tracy-debug .tracy-panel-session .content table th{border:1px solid #E6DFBF;padding:2px 5px;vertical-align:top;text-align:left;}

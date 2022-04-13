@@ -24,7 +24,7 @@ class SessionPanel implements \Tracy\IBarPanel {
 	 * Comparison by PHP function version_compare();
 	 * @see http://php.net/manual/en/function.version-compare.php
 	 */
-	const VERSION = '5.0.4';
+	const VERSION = '5.0.5';
 
 	/**
 	 * Internal constants to recognize session record types in template.
@@ -39,7 +39,7 @@ class SessionPanel implements \Tracy\IBarPanel {
 	 * @var string
 	 */
 	public static $MetaStoreKey = \MvcCore\ISession::SESSION_METADATA_KEY;
-
+	
 	/**
 	 * Session store dumped data, rendered in template.
 	 * @var array
@@ -58,11 +58,12 @@ class SessionPanel implements \Tracy\IBarPanel {
 	 */
 	private $_debugCode = '';
 
+	
 	/**
 	 * Get unique `Tracy` debug bar panel id.
 	 * @return string
 	 */
-	public function getId() {
+	public function getId () {
 		return 'session-panel';
 	}
 
@@ -70,7 +71,7 @@ class SessionPanel implements \Tracy\IBarPanel {
 	 * Return rendered debug panel heading HTML code displayed all time in `Tracy` debug  bar.
 	 * @return string
 	 */
-	public function getTab() {
+	public function getTab () {
 		ob_start();
 		include(__DIR__ . '/session.tab.phtml');
 		return ob_get_clean();
@@ -80,7 +81,7 @@ class SessionPanel implements \Tracy\IBarPanel {
 	 * Return rendered debug panel content window HTML code.
 	 * @return string
 	 */
-	public function getPanel() {
+	public function getPanel () {
 		$this->prepareSessionData();
 		if (!$this->session) return '';
 		ob_start();
