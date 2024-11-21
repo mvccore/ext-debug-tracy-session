@@ -24,8 +24,8 @@
 	}],
 	"require": {
 		"php": ">=5.4.0",
-		"mvccore/mvccore": "^5.2",
-		"mvccore/ext-debug-tracy": "^5.2"
+		"mvccore/mvccore": "^5.3",
+		"mvccore/ext-debug-tracy": "^5.3"
 	},
 	"autoload": {
 		"classmap": [
