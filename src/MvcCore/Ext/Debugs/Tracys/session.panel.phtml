@@ -1,5 +1,7 @@
 <?php
-	$nonce = \Tracy\Helpers::getNonce();
+	$nonce = version_compare(\Tracy\Debugger::Version, '2.10.8', '>=')
+		? \Tracy\Helpers::getNonceAttr()
+		: \Tracy\Helpers::getNonce();
 	$nonceAttr = $nonce ? ' nonce="' . \Tracy\Helpers::escapeHtml($nonce) . '"' : '';
 ?><style type="text/css"<?php echo $nonceAttr; ?>><?php
 	include_once(__DIR__ . '/session.panel.css');
