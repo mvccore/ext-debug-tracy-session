@@ -1,5 +1,8 @@
 <?php
-	$nonce = version_compare(\Tracy\Debugger::Version, '2.10.8', '>=')
+	$tracyVersion = defined("\\Tracy\\Debugger::Version")
+		? \Tracy\Debugger::Version
+		: \Tracy\Debugger::VERSION;
+	$nonce = version_compare($tracyVersion, '2.10.8', '>=')
 		? \Tracy\Helpers::getNonceAttr()
 		: \Tracy\Helpers::getNonce();
 	$nonceAttr = $nonce ? ' nonce="' . \Tracy\Helpers::escapeHtml($nonce) . '"' : '';
@@ -13,7 +16,7 @@
 			<span class="right">Max. life time: <?php echo $this->sessionMaxLifeTime; ?></span>
 		<?php endif; ?>
 	</h1>
-	<div class="content">
+	<div id="tracy-panel-session-content">
 		<?php
 			foreach ($this->session as & $item):
 				$itemNamespaceType = $item->type == self::_TYPE_NAMESPACE;

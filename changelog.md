@@ -1,3 +1,3 @@
 ### Fixed
-- Compatibility fix for `tracy/tracy` package and it's method renamed:  
-  `\Tracy\Helpers::getNonce()` => `getNonceAttr()`.
+- Compatible code for deprecated `\Tracy\Debugger::VERSION`,
+- CSS fixes.
